@@ -15,30 +15,30 @@ func main() {
 	alarm := action.GetRandomAlarm()
 	body, err := json.Marshal(alarm)
 	if err != nil {
-		log.Fatal("Failed to marshal alarm", err)
+		log.Fatal("Failed to marshal alarm ", err)
 	}
 
 	rmqURL := config.RabbitmqURL()
 	conn, err := amqp.Dial(rmqURL)
 	if err != nil {
-		log.Fatal("Failed to connect to RabbitMQ", err)
+		log.Fatal("Failed to connect to RabbitMQ ", err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Fatal("Failed to open a channel", err)
+		log.Fatal("Failed to open a channel ", err)
 	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare("Alarm", false, false, false, false, nil)
 	if err != nil {
-		log.Fatal("Failed to declare an Alarm queue", err)
+		log.Fatal("Failed to declare an Alarm queue ", err)
 	}
 
 	err = publish(ch, q.Name, body)
 	if err != nil {
-		log.Fatal("Failed to publish a message", err)
+		log.Fatal("Failed to publish a message ", err)
 	}
 
 	log.Printf("Sent to %s queue: %s", q.Name, body)
@@ -47,7 +47,7 @@ func main() {
 func publish(ch *amqp.Channel, queueName string, body []byte) error {
 	return ch.Publish("", queueName, false, false,
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
+			ContentType: "application/json",
+			Body:        body,
 		})
 }
