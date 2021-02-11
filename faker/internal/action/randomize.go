@@ -2,7 +2,6 @@ package action
 
 import (
 	"faker/internal/model"
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -19,7 +18,6 @@ func GetRandomAlarm() model.Alarm {
 	startTime := time.Now()
 	lastTime := time.Now()
 	status := getRandomStatus()
-	fmt.Println(getRandomMessage(messageLength))
 
 	return model.Alarm{
 		Component: component,
