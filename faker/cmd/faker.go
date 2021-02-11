@@ -1,16 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"faker/internal/action"
+	"fmt"
 	"log"
-	"os"
-	"time"
 )
 
 func main() {
-	duration := action.GetDuration(os.Args)
-	for {
-		log.Println("Message sent.")
-		time.Sleep(duration * time.Second)
+	alarm := action.GetRandomAlarm()
+	json, err := json.Marshal(alarm)
+	if err != nil {
+		log.Fatal(err)
 	}
+	fmt.Println(string(json))
+
 }
