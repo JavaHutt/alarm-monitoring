@@ -1,0 +1,33 @@
+version: '3'
+services:
+  rabbit:
+    image: "rabbitmq:3-management"
+    container_name: "rabbitmq"
+    environment:
+      RABBITMQ_DEFAULT_USER: "test"
+      RABBITMQ_DEFAULT_PASS: "test"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks: 
+      - alarm-monitoring
+    labels:
+      NAME: "rabbitmq"
+  database:
+    image: "mongo:3.6.22-xenial"
+    container_name: "mongodb"
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-data:/data/db
+    restart: unless-stopped
+    networks: 
+      - alarm-monitoring
+    labels:
+      NAME: "mongodb"
+volumes:
+  mongo-data:
+    driver: local
+networks: 
+  alarm-monitoring:
+    driver: bridge
