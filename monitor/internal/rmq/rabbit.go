@@ -19,7 +19,7 @@ func NewRabbitMQ(cfg Config) (*amqp.Connection, error) {
 
 func getURL(cfg Config) string {
 	return fmt.Sprintf(
-		"amqp://%s:%s@%s/",
-		"test", "test", "localhost:5672",
+		"amqp://%s:%s@%s:%s/",
+		cfg.User, cfg.Password, cfg.Host, cfg.Port,
 	)
 }

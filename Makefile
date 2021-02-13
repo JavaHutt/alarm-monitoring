@@ -8,11 +8,14 @@ up	:
 
 down	:
 	docker-compose down
-
 # Faker
 fake	:
 ifdef duration
-	cd ./faker/cmd && go run faker.go $(duration)
+	cd ./faker && $(MAKE) run $(duration)
 else
-	cd ./faker/cmd && go run faker.go
+	cd ./faker && $(MAKE) run
 endif
+
+# Monitor
+run	:
+	cd ./monitor && $(MAKE) run

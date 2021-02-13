@@ -2,24 +2,42 @@ package main
 
 import (
 	"encoding/json"
-	"faker/config"
 	"faker/internal/action"
+	"fmt"
 	"log"
+	"os"
 
+	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
 )
 
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
+}
+
 func main() {
-	// duration := action.GetDuration(os.Args)
+	if err := initConfig(); err != nil {
+		log.Fatalf("Failed to initialize config: %s", err.Error())
+	}
+	duration := action.GetDuration(os.Args)
+	fmt.Println("duration:", duration)
 
 	alarm := action.GetRandomAlarm()
 	body, err := json.Marshal(alarm)
 	if err != nil {
 		log.Fatal("Failed to marshal alarm ", err)
 	}
-	// TODO: make good config
-	rmqURL := config.RabbitmqURL()
-	conn, err := amqp.Dial(rmqURL)
+
+	url := fmt.Sprintf(
+		"amqp://%s:%s@%s:%s/",
+		viper.GetString("amqp.user"),
+		viper.GetString("amqp.password"),
+		viper.GetString("amqp.host"),
+		viper.GetString("amqp.port"),
+	)
+	conn, err := amqp.Dial(url)
 	if err != nil {
 		log.Fatal("Failed to connect to RabbitMQ ", err)
 	}

@@ -10,8 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// TODO: test_technique
-const techniqueCollection = "test_collection"
+const techniqueCollection = "test_technique"
 
 // TechMongo is an adaptor for techniques
 type TechMongo struct {
@@ -46,7 +45,6 @@ func (a *TechMongo) UpdateOngoingTech(ctx context.Context, id primitive.ObjectID
 		"last_time": fields.LastTime,
 	}})
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 	log.Println("Updated existing ongoing technique")
@@ -62,7 +60,6 @@ func (a *TechMongo) UpdateResolvedTech(ctx context.Context, id primitive.ObjectI
 		"status":    model.Resolved,
 	}})
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 	log.Println("Updated existing resolved technique")

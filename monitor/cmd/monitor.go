@@ -44,6 +44,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to RabbitMQ ", err)
 	}
+	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
@@ -72,7 +73,7 @@ func main() {
 
 			err = service.InsertAlarm(ctx, *parsed)
 			if err != nil {
-				log.Fatal("Failed parse incoming alarm ", err)
+				log.Fatal("Failed insert incoming alarm ", err)
 			}
 
 			d.Ack(false)
@@ -81,5 +82,4 @@ func main() {
 
 	log.Printf("Waiting for messages. To exit press CTRL+C")
 	<-forever
-
 }

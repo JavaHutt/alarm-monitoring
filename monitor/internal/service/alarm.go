@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"monitor/internal/adaptor"
 	"monitor/internal/model"
@@ -30,18 +29,16 @@ func (s *AlarmService) ParseAlarm(body []byte) (*model.Alarm, error) {
 		log.Println("Failed to unmarshal incoming alarm")
 		return nil, err
 	}
-	log.Println("Incoming alarm: ", *parsed)
+	log.Printf("Incoming alarm: %+v", *parsed)
 	return parsed, nil
 }
 
 // InsertAlarm creates or updates alarm depending on Alarm state
 func (s *AlarmService) InsertAlarm(ctx context.Context, alarm model.Alarm) error {
-	fmt.Println("INSERT ALARM")
 	existOngoing, err := s.adaptor.GetOngoingTechByComponentName(ctx, alarm.Component, alarm.Resource)
 	if err != nil {
 		return err
 	}
-	log.Printf("Crit level: %d", alarm.Crit)
 	if alarm.Crit > model.Ok {
 		log.Println("Crit is not OK")
 		if existOngoing != nil {
@@ -65,7 +62,7 @@ func (s *AlarmService) InsertAlarm(ctx context.Context, alarm model.Alarm) error
 
 			return s.adaptor.UpdateResolvedTech(ctx, existOngoing.ID, updateFields)
 		}
-		log.Println("Continue recieving")
+		log.Println("Not much of a danger. Continue recieving")
 	}
 
 	return nil
