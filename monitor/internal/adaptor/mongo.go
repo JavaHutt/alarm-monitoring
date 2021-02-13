@@ -9,14 +9,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const techniqueCollection = "test_technique"
+const databaseName = "test"
+const TechniqueCollection = "test_technique"
 
 type Config struct {
 	Host string
 	Port string
 }
 
-func NewMongoDB(ctx context.Context, cfg Config) (*mongo.Client, error) {
+func NewMongoDB(ctx context.Context, cfg Config) (*mongo.Database, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s", cfg.Host, cfg.Port)))
 	if err != nil {
 		return nil, err
@@ -29,5 +30,5 @@ func NewMongoDB(ctx context.Context, cfg Config) (*mongo.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return client, nil
+	return client.Database(databaseName), nil
 }

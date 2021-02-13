@@ -2,15 +2,20 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"monitor/internal/adaptor"
+	"monitor/internal/service"
 	"time"
 
 	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
-	"go.mongodb.org/mongo-driver/bson"
 )
+
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
+}
 
 func main() {
 	if err := initConfig(); err != nil {
@@ -19,25 +24,19 @@ func main() {
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-	client, err := adaptor.NewMongoDB(ctx, adaptor.Config{
+	db, err := adaptor.NewMongoDB(ctx, adaptor.Config{
 		Host: viper.GetString("db.host"),
 		Port: viper.GetString("db.port"),
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer client.Disconnect(ctx)
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(databases)
-}
+	defer db.Client().Disconnect(ctx)
 
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-	return viper.ReadInConfig()
+	adaptor := adaptor.NewAdaptor(db)
+	services := service.NewService(adaptor)
+	services.InsertAlarm(ctx)
+
 }
 
 func recieve(msgs <-chan amqp.Delivery) {

@@ -1,13 +1,22 @@
 package service
 
+import (
+	"context"
+	"monitor/internal/adaptor"
+)
+
 type AlarmService struct {
-	repo int
+	adaptor *adaptor.Adaptor
 }
 
-func NewAlarmService(repo int) *AlarmService {
-	return &AlarmService{}
+// NewAlarmService is a constructor
+func NewAlarmService(adaptor *adaptor.Adaptor) *AlarmService {
+	return &AlarmService{
+		adaptor: adaptor,
+	}
 }
 
-func (s *AlarmService) InsertAlarm() (int, error) {
+func (s *AlarmService) InsertAlarm(ctx context.Context) (int, error) {
+	s.adaptor.GetAllTechniques(ctx)
 	return 1, nil
 }

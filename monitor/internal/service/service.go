@@ -1,15 +1,20 @@
 package service
 
+import (
+	"context"
+	"monitor/internal/adaptor"
+)
+
 type Service struct {
 	Alarm
 }
 
-func NewService() *Service {
+func NewService(adaptor *adaptor.Adaptor) *Service {
 	return &Service{
-		Alarm: NewAlarmService(1),
+		Alarm: NewAlarmService(adaptor),
 	}
 }
 
 type Alarm interface {
-	InsertAlarm() (int, error)
+	InsertAlarm(ctx context.Context) (int, error)
 }

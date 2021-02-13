@@ -1,10 +1,19 @@
 package adaptor
 
+import (
+	"context"
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
 type TechMongo struct {
-	db int
+	db *mongo.Database
 }
 
-func NewTechMongo(db int) *TechMongo {
+// NewTechMongo is a constructor
+func NewTechMongo(db *mongo.Database) *TechMongo {
 	return &TechMongo{db: db}
 }
 
@@ -14,6 +23,11 @@ func (a *TechMongo) CreateTech() (int, error) {
 
 func (a *TechMongo) UpdateTech(id int) (string, error) {
 	return "4", nil
+}
+
+func (a *TechMongo) GetAllTechniques(ctx context.Context) (string, error) {
+	fmt.Println(a.db.ListCollectionNames(ctx, bson.M{}))
+	return "3", nil
 }
 
 // GetTechByComponentName returns technique by component/resource couple
