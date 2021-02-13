@@ -10,13 +10,14 @@ import (
 )
 
 const databaseName = "test"
-const TechniqueCollection = "test_technique"
 
+// Config for MongoDB client
 type Config struct {
 	Host string
 	Port string
 }
 
+// NewMongoDB returns new database instance
 func NewMongoDB(ctx context.Context, cfg Config) (*mongo.Database, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s", cfg.Host, cfg.Port)))
 	if err != nil {

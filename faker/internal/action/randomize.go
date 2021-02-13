@@ -14,7 +14,7 @@ func GetRandomAlarm() model.Alarm {
 	resource := getRandomResource()
 	crit := getRandomCrit()
 	lastMsg := getRandomMessage(messageLength)
-	firstMsg := getRandomMessage(messageLength)
+	firstMsg := "First message"
 	startTime := time.Now()
 	lastTime := time.Now()
 	status := getRandomStatus()

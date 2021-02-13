@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"monitor/internal/adaptor"
+	"monitor/internal/model"
 	"monitor/internal/service"
 	"time"
 
@@ -35,7 +36,8 @@ func main() {
 
 	adaptor := adaptor.NewAdaptor(db)
 	services := service.NewService(adaptor)
-	services.InsertAlarm(ctx)
+	a := model.Alarm{}
+	services.InsertAlarm(ctx, a)
 
 }
 
