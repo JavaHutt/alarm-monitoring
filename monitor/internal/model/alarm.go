@@ -28,7 +28,7 @@ const (
 
 // Alarm is the data model
 type Alarm struct {
-	ID        primitive.ObjectID `json:"_id"  bson:"_id"`
+	ID        primitive.ObjectID `json:"_id"        bson:"_id"`
 	Component string             `json:"component"  bson:"component"`
 	Resource  string             `json:"resource"   bson:"resource"`
 	Crit      Crit               `json:"crit"       bson:"crit"`

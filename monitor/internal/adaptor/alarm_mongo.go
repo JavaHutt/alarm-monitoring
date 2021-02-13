@@ -100,11 +100,13 @@ func (a *TechMongo) GetOngoingTechByComponentName(
 		"resource":  resource,
 		"status":    model.Ongoing,
 	}).Decode(&result)
+
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			log.Println("Record does not exist")
 			return nil, nil
 		}
+		log.Println(err)
 		return nil, err
 	}
 	log.Println("Record exists")

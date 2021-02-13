@@ -4,12 +4,15 @@ import (
 	"faker/internal/model"
 	"math/rand"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-const messageLength = 7
+const messageLength = 10
 
 // GetRandomAlarm mocks Alarm data
 func GetRandomAlarm() model.Alarm {
+	id := primitive.NewObjectID()
 	component := getRandomComponent()
 	resource := getRandomResource()
 	crit := getRandomCrit()
@@ -20,6 +23,7 @@ func GetRandomAlarm() model.Alarm {
 	status := getRandomStatus()
 
 	return model.Alarm{
+		ID:        id,
 		Component: component,
 		Resource:  resource,
 		Crit:      crit,

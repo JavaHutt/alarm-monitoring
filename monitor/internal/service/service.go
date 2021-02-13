@@ -20,5 +20,6 @@ func NewService(adaptor *adaptor.Adaptor) *Service {
 
 // Alarm is interface for handling incoming alarms
 type Alarm interface {
+	ParseAlarm(body []byte) (*model.Alarm, error)
 	InsertAlarm(ctx context.Context, alarm model.Alarm) error
 }

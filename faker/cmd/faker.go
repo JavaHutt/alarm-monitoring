@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to marshal alarm ", err)
 	}
-
+	// TODO: make good config
 	rmqURL := config.RabbitmqURL()
 	conn, err := amqp.Dial(rmqURL)
 	if err != nil {
