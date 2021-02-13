@@ -1,42 +1,42 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"monitor/config"
+	"time"
 
 	"github.com/streadway/amqp"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func main() {
-	rmqURL := config.RabbitmqURL()
-	conn, err := amqp.Dial(rmqURL)
+	client, err := mongo.NewClient(options.Client().ApplyURI(config.MongoURL()))
 	if err != nil {
-		log.Fatal("Failed to connect to RabbitMQ ", err)
+		log.Fatal(err)
 	}
-	defer conn.Close()
-
-	ch, err := conn.Channel()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	if err != nil {
-		log.Fatal("Failed to open a channel ", err)
+		log.Fatal(err)
 	}
-	defer ch.Close()
-
-	q, err := ch.QueueDeclare("Alarm", false, false, false, false, nil)
+	err = client.Connect(ctx)
 	if err != nil {
-		log.Fatal("Failed to declare a queue ", err)
+		log.Fatal(err)
 	}
-
-	msgs, err := ch.Consume(q.Name, "", false, false, false, false, nil)
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		log.Fatal("Failed to register a consumer ", err)
+		log.Fatal(err)
 	}
-
-	forever := make(chan bool)
-
-	go recieve(msgs)
-
-	log.Printf("Waiting for messages. To exit press CTRL+C")
-	<-forever
+	databases, err := client.ListDatabaseNames(ctx, bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(databases)
 }
 
 func recieve(msgs <-chan amqp.Delivery) {

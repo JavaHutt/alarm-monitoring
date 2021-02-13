@@ -23,7 +23,6 @@ const (
 )
 
 // Alarm is the data model
-// I used
 type Alarm struct {
 	Component string    `json:"component"  bson:"component"`
 	Resource  string    `json:"resource"   bson:"resource"`
