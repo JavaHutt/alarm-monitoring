@@ -1,7 +1,5 @@
 package adaptor
 
-const techniqueCollection = "test_technique"
-
 type TechMongo struct {
 	db int
 }

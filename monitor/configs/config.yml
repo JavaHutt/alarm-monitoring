@@ -1,0 +1,10 @@
+port: "8080"
+
+db:
+  host: "127.0.0.1"
+  port: "27017"
+
+amqp:
+  host: "5672"
+  user: "test"
+  password: "test"
