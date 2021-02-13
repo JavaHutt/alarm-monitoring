@@ -24,6 +24,7 @@ func NewAdaptor(db *mongo.Database) *Adaptor {
 type TechAdaptor interface {
 	CreateTech(ctx context.Context, alarm model.Alarm) error
 	UpdateOngoingTech(ctx context.Context, id primitive.ObjectID, fields model.Alarm) error
+	UpdateResolvedTech(ctx context.Context, id primitive.ObjectID, fields model.Alarm) error
 	GetAllTechniques(ctx context.Context) ([]model.Alarm, error)
 	GetOngoingTechByComponentName(ctx context.Context, component string, resource string) (*model.Alarm, error)
 }

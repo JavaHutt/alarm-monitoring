@@ -53,6 +53,22 @@ func (a *TechMongo) UpdateOngoingTech(ctx context.Context, id primitive.ObjectID
 	return nil
 }
 
+// UpdateResolvedTech updates and resolves record in technique collection
+func (a *TechMongo) UpdateResolvedTech(ctx context.Context, id primitive.ObjectID, fields model.Alarm) error {
+	_, err := a.getCollection().UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{
+		"crit":      fields.Crit,
+		"last_msg":  fields.LastMsg,
+		"last_time": fields.LastTime,
+		"status":    model.Resolved,
+	}})
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	log.Println("Updated existing resolved technique")
+	return nil
+}
+
 // GetAllTechniques returns all records in technique collection
 func (a *TechMongo) GetAllTechniques(ctx context.Context) ([]model.Alarm, error) {
 	result := new([]model.Alarm)
