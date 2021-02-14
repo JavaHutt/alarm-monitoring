@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
@@ -22,13 +23,7 @@ func main() {
 		log.Fatalf("Failed to initialize config: %s", err.Error())
 	}
 	duration := action.GetDuration(os.Args)
-	fmt.Println("duration:", duration)
-
-	alarm := action.GetRandomAlarm()
-	body, err := json.Marshal(alarm)
-	if err != nil {
-		log.Fatal("Failed to marshal alarm ", err)
-	}
+	log.Println("Faker started with interval: ", duration)
 
 	url := fmt.Sprintf(
 		"amqp://%s:%s@%s:%s/",
@@ -54,12 +49,20 @@ func main() {
 		log.Fatal("Failed to declare an Alarm queue ", err)
 	}
 
-	err = publish(ch, q.Name, body)
-	if err != nil {
-		log.Fatal("Failed to publish a message ", err)
-	}
+	for {
+		alarm := action.GetRandomAlarm()
+		body, err := json.Marshal(alarm)
+		if err != nil {
+			log.Fatal("Failed to marshal alarm ", err)
+		}
+		err = publish(ch, q.Name, body)
+		if err != nil {
+			log.Fatal("Failed to publish a message ", err)
+		}
 
-	log.Printf("Sent to %s queue: %s", q.Name, body)
+		log.Printf("Sent to %s queue: %s", q.Name, body)
+		time.Sleep(duration * time.Second)
+	}
 }
 
 func publish(ch *amqp.Channel, queueName string, body []byte) error {
